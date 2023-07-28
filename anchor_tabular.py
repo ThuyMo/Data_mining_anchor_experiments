@@ -4,7 +4,8 @@ import lime.lime_tabular
 import collections
 import sklearn
 import numpy as np
-
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
 class AnchorTabularExplainer(object):
     """
@@ -19,11 +20,16 @@ class AnchorTabularExplainer(object):
             # TODO: Check if this n_values is correct!!
             cat_names = sorted(categorical_names.keys())
             n_values = [len(categorical_names[i]) for i in cat_names]
+            # self.encoder = sklearn.preprocessing.OneHotEncoder(
+            #     categorical_features=cat_names,
+            #     n_values=n_values)
             self.encoder = sklearn.preprocessing.OneHotEncoder(
                 categorical_features=cat_names,
                 n_values=n_values)
             self.encoder.fit(data)
             self.categorical_features = self.encoder.categorical_features
+        else:  ## Allow for datasets without categorical names
+            categorical_names = {}
         self.ordinal_features = ordinal_features
         self.feature_names = feature_names
         self.class_names = class_names

@@ -23,7 +23,7 @@ def main():
                         default=200, type=int,
                         help='checkpoint after this many explanations')
     parser.add_argument('-o', dest='output', required=True)
-
+    print('-----------------training---------')
     args = parser.parse_args()
     dataset = utils.load_dataset(args.dataset, balance=True)
     ret = {}
@@ -81,10 +81,10 @@ def main():
     ret['exps'] = []
     for i, d in enumerate(dataset.validation, start=1):
         # print(i)
+        print('Checkpointing')
         if i % 100 == 0:
             print(i)
         if i % args.checkpoint == 0:
-            print('Checkpointing')
             pickle.dump(ret, open(args.output + '.checkpoint', 'w'))
         ret['exps'].append(explain_fn(d))
 

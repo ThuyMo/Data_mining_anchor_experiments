@@ -23,7 +23,7 @@ class Bunch(object):
 def map_array_values(array, value_map):
     # value map must be { src : target }
     ret = array.copy()
-    for src, target in value_map.iteritems():
+    for src, target in value_map.items():
         ret[ret == src] = target
     return ret
 
@@ -31,6 +31,7 @@ def replace_binary_values(array, values):
     return map_array_values(array, {'0': values[0], '1': values[1]})
 
 def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='./datasets'):
+
     if dataset_name == 'adult':
         feature_names = ["Age", "Workclass", "fnlwgt", "Education",
                          "Education-Num", "Marital Status", "Occupation",
@@ -189,7 +190,11 @@ def load_dataset(dataset_name, balance=False, discretize=True, dataset_folder='.
             categorical_features=categorical_features, discretize=discretize,
             filter_fn=filter_fn, balance=True)
         dataset.class_names = ['Good Loan', 'Bad Loan']
+
+
     return dataset
+
+
 
 
 
@@ -266,8 +271,10 @@ def load_csv_dataset(data, target_idx, delimiter=',',
         data = disc.discretize(data)
         ordinal_features = [x for x in range(data.shape[1])
                             if x not in categorical_features]
-        categorical_features = range(data.shape[1])
+        categorical_features = list(range(data.shape[1]))
         categorical_names.update(disc.names)
+    for x in categorical_names:
+        categorical_names[x] = [y.decode() if type(y) == np.bytes_ else y for y in categorical_names[x]]
     ret.ordinal_features = ordinal_features
     ret.categorical_features = categorical_features
     ret.categorical_names = categorical_names
@@ -490,7 +497,7 @@ def compute_lime_weight_vals(explanations, exp_data, data):
             intercept = explanations[j]['intercept']
             val = intercept
             # val = 0.5
-            for f, v in exp.iteritems():
+            for f, v in exp.items():
                 if d[f] == exp_data[j, f]:
                     val += v
             vals[i, j] = val
